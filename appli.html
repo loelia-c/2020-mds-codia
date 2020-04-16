@@ -64,7 +64,7 @@
 <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
 <script>
     var db = new PouchDB('db_api');
-
+    var dbUser = new PouchDB('db_utilisateur');
 
     var livres = new Vue({
         el : '#wrapper',
@@ -86,6 +86,13 @@
             }).catch(function (err) {
                 console.log(err);
             });
+
+            /*dbUser.sync('https://5f27fc86-3f3f-472c-a0a4-d8e736af858d-bluemix:c1f2fabb64ca498b4b4e93f1e2672f0361facfce1c1d932b59020b0f47ba6419@5f27fc86-3f3f-472c-a0a4-d8e736af858d-bluemix.cloudantnosqldb.appdomain.cloud/db_utilisateur')
+                .then(function (doc) {
+                    return dbUser.allDocs({include_docs: true})
+                }).catch(function (err) {
+                console.log(err);
+            });*/
         },
 
         computed : {
@@ -113,14 +120,24 @@
 
         methods: {
             addLivre : function(id){
-                var docSpec = db.get(id);
-
-                //Voir comment faire pour put dans la base de données utilisateur
-                db.put({
-                    _id: 'mydoc',
-                    title: 'Heroes'
-                }).then(function (response) {
-                    // handle response
+                db.get(id).then(function(doc) {
+                    console.log(doc);
+                    return dbUser.put({
+                        _id: doc._id,
+                        visuel: doc.visuel,
+                        titre: doc.titre,
+                        auteur: doc.auteur,
+                        edition: doc.edition,
+                        genre: doc.genre,
+                        tome: doc.tome,
+                        date_parution: doc.date_parution,
+                        nb_pages: doc.nb_pages,
+                        langue: doc.langue,
+                        resume: doc.resume,
+                        isbn: doc.isbn
+                    });
+                }).then(function(response) {
+                    console.log(response);
                 }).catch(function (err) {
                     console.log(err);
                 });
