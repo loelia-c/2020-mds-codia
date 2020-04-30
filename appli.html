@@ -2,14 +2,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="book.list.css">
     <title>Document</title>
 </head>
 <body>
 <div id="wrapper" class="wrapper" v-cloak>
     <div class="header">
+        <div class="titre">
+            Livres
+        </div>
         <div class="recherche">
             Rechercher : <input type="text" v-model="searchString" placeholder="Entrer votre recherche" />
         </div>
@@ -54,6 +57,9 @@
             </p>
             <button v-on:click="addLivre(l.doc._id)">Ajouter à la collection</button>
         </div>
+        <a href="collection.html">
+            <button>Ma collection</button>
+        </a>
     </div>
     <div class="footer">
         Footer
