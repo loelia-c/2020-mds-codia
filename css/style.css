@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body{
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        background-color: #f5f5f5;
+    }
+
+p{
+    margin: 0;
+}
+
+h3{
+    margin: 0;
+    font-size: 14px;
+    font-family: Comfortaa, sans-serif;
+    font-weight: 700;
+}
+
+.bold{
+    font-weight: 700;
+}
+
+.container{
+    width: 360px;
+    height: 640px;
+    overflow-y: scroll;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(3, 1fr) ;
+    grid-template-areas: 'header' 'content' 'footer';
+}
+
+.header {
+    grid-area: header;
+    display: grid;
+    grid-template-areas: 'titre' 'recherche';
+    width: 360px;
+    position: fixed;
+}
+
+.content{
+    margin-top: calc(45px + 48px);
+    padding: 16px 16px 86px 16px;
+}
+
+
+.footer{
+    grid-area: footer;
+    position: fixed;
+    bottom: calc(100vh - 640px);
+    height: 70px;
+    width: 360px;
+    background-color: darkviolet;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: 'account home settings';
+}
+
+
+
+
+
+.titre{
+    grid-area: titre;
+    background-color: #E04291;
+    height: 45px;
+    text-align: center;
+    color: #ffffff;
+    font-family: Comfortaa, sans-serif;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.recherche{
+    grid-area: recherche;
+    background-color: #222222;
+    height: 48px;
+    padding: 0 24px 0 17px;
+    display: flex;
+    align-items: center;
+}
+
+.recherche img{
+    margin: 0 0 0 auto;
+}
+
+#recherche{
+    width: 262.5px;
+    border: none;
+    border-bottom: 1px solid #ffffff;
+    background-color: transparent;
+    color: #FFFFFF;
+    font-family: Montserrat, sans-serif;
+    font-size: 14px;
+}
+
+#recherche::placeholder{
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+
+
+
+#medias{
+    height: 100px;
+    margin-bottom: 16px;
+    background-color: #F5F5F5;
+    display: grid;
+    grid-template-columns: 74px auto 50px;
+    grid-template-areas: 'img textes btn-add';
+}
+
+.media-img{
+    grid-area: img;
+    height: 100%;
+    width: 74px;
+    object-fit: cover;
+}
+
+.media-textes{
+    grid-area: textes;
+    padding: 8px;
+    font-size: 10px;
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+}
+
+.media-textes h3{
+    margin-bottom: 2px;
+}
+
+#media-first-line{
+    margin-bottom: 8px;
+}
+
+.btn-add{
+    grid-area: btn-add;
+    width: 34px;
+    height: 34px;
+    border-radius: 100%;
+    border: none;
+    margin: auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5E3189;
+}
+
+.musique-titre{
+    color: #127897;
+}
+
+.BD-titre{
+    color: #FDCA00;
+}
+
+.film-titre{
+    color: #6767AD;
+}
+
+.jeux-titre{
+    color: #286CB4;
+}
+
+
+.icon-btn{
+    height: 15px;
+}
+
+.footer-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-img{
+    height: 30px;
+    margin: auto;
+}
+
+#account{
+    grid-area: account;
+    background-color: #844393;
+}
+
+#home{
+    grid-area: home;
+    background-color: #5E3189;
+}
+
+#settings{
+    grid-area: settings;
+    background-color: #4D2C87;
+}
+

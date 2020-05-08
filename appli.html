@@ -4,65 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="book.list.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
     <title>Document</title>
 </head>
 <body>
-<div id="wrapper" class="wrapper" v-cloak>
+<div id="container" class="container" v-cloak>
     <div class="header">
         <div class="titre">
-            Livres
+            <p>
+                Wishlist <span id="nb-medias"></span>
+            </p>
         </div>
         <div class="recherche">
-            Rechercher : <input type="text" v-model="searchString" placeholder="Entrer votre recherche" />
+            <input id="recherche" type="text" v-model="searchString" placeholder="Rechercher" />
+            <img src="pictos/22/filter.png" alt="Icône filtres d'ajustement">
         </div>
     </div>
     <div class="content" v-if="affichage">
+        <div id="medias" v-for="m in filtrer">
 
-        <h2 class="lesLivres" id="lesLivres">Les Livres</h2>
-        <div id="livres" v-for="l in filtrer">
+            <img class="media-img" :src="m.doc.visuel">
+            <div class="media-textes">
 
-            <img class="img-livre" :src="l.doc.visuel">
-            <h3>{{ l.doc.titre }}</h3>
-            <p class="auteur">
-                {{ l.doc.auteur }}
-            </p>
-            <p class="edition">
-                {{ l.doc.edition }}
-            </p>
-            <p class="genre">
-                Genre(s) :
-                <span v-for="liv in l.doc.genre">
-                    <?php echo "{{liv}} / "; ?>
-                </span>
-            </p>
+                <h3 v-if="m.doc.type == 'musique'" class="musique-titre">{{ m.doc.titre }}</h3>
+                <h3 v-if="m.doc.type == 'BD'" class="BD-titre">{{ m.doc.titre }}</h3>
+                <h3 v-if="m.doc.type == 'film'" class="film-titre">{{ m.doc.titre }}</h3>
+                <h3 v-if="m.doc.type == 'jeux'" class="jeux-titre">{{ m.doc.titre }}</h3>
 
-            <p class="tome">
-                {{ l.doc.tome }}
-            </p>
-            <p class="date_parution">
-                {{ l.doc.date_parution }}
-            </p>
-            <p class="nb_pages">
-                {{ l.doc.nb_pages }}
-            </p>
-            <p class="langue">
-                {{ l.doc.langue }}
-            </p>
-            <p class="resume">
-                {{ l.doc.resume }}
-            </p>
-            <p class="isbn">
-                {{ l.doc.isbn }}
-            </p>
-            <button v-on:click="addLivre(l.doc._id)">Ajouter à la collection</button>
+
+                <p id="media-first-line">
+                    <span v-if="m.doc.artiste" class="bold musique">
+                        {{ m.doc.artiste }} -
+                    </span>
+                    <span v-if="m.doc.auteur" class="bold livre">
+                        {{ m.doc.auteur }} -
+                    </span>
+                    <span v-if="m.doc.realisateur" class="bold film">
+                        {{ m.doc.realisateur }} -
+                    </span>
+                    <span v-if="m.doc.console" class="bold jeux">
+                        {{ m.doc.console }} -
+                    </span>
+
+
+                    <span v-if="m.doc.edition">
+                        {{ m.doc.edition }} -
+                    </span>
+
+                    <span v-if="m.doc.nb_titres">
+                        {{ m.doc.nb_titres }} titre(s)
+                    </span>
+                    <span v-if="m.doc.nb_pages" >
+                        {{ m.doc.nb_pages }} pages
+                    </span>
+                    <span v-if="m.doc.duree">
+                        {{ m.doc.duree }} minutes
+                    </span>
+                    <span v-if="m.doc.pegi">
+                        {{ m.doc.pegi }}
+                    </span>
+                </p>
+                <p id="media-second-line">
+                    <span class="bold">
+                        {{ m.doc.support }} -
+                    </span>
+                    <span>
+                        {{ m.doc.parution }}
+                    </span>
+                </p>
+            </div>
+            <button v-on:click="addMedia(m.doc._id)" class="btn-add">
+                <img src="pictos/52/add.png" class="icon-btn" alt="Icône d'ajout">
+            </button>
         </div>
         <a href="collection.html">
             <button>Ma collection</button>
         </a>
     </div>
     <div class="footer">
-        Footer
+        <div id="account" class="footer-content">
+            <img src="pictos/48/account.png" class="footer-img" alt="Icône compte utilisateur">
+        </div>
+        <div id="home" class="footer-content">
+            <img src="pictos/48/home.png" class="footer-img" alt="Icône accueil">
+        </div>
+        <div id="settings" class="footer-content">
+            <img src="pictos/48/settings.png" class="footer-img" alt="Icône paramètres">
+        </div>
+
     </div>
 </div>
 
@@ -73,12 +102,14 @@
 <script>
     var db = new PouchDB('db_api');
     var dbUser = new PouchDB('db_utilisateur');
+    var nbMediasTot = 0;
+    var nbMediasFiltre = 0;
 
-    var livres = new Vue({
-        el : '#wrapper',
+    var medias = new Vue({
+        el : '#container',
         data : {
             searchString: "",
-            tabLivres: [],
+            tabMedias: [],
             affichage: false,
         },
 
@@ -89,8 +120,10 @@
                 .then(function (doc) {
                     return db.allDocs({include_docs: true})
                 }).then(function (doc) {
-                vm.tabLivres = doc.rows;
+                vm.tabMedias = doc.rows;
                 vm.affichage = true;
+                nbMediasTot = vm.tabMedias.length;
+                console.log(vm.tabMedias);
             }).catch(function (err) {
                 console.log(err);
             });
@@ -105,50 +138,57 @@
 
         computed : {
             filtrer : function(){
-                var tableau = this.tabLivres;
+                var tableau = this.tabMedias;
                 searchString = this.searchString;
                 if(!searchString)
                 {
-                    return tableau;
+                    nbMediasFiltre = nbMediasTot;
                 }
-                searchString = searchString.trim().toLowerCase();
-
-                // Filtre sur titre
-                tableau = tableau.filter(function(livres){
-                    if(livres.doc.titre.toLowerCase().indexOf(searchString) !== -1)
-                    {
-                        return livres;
-                    }
-                })
+                else
+                {
+                    searchString = searchString.trim().toLowerCase();
+                    // Filtre sur titre
+                    tableau = tableau.filter(function(medias){
+                        if(medias.doc.titre.toLowerCase().indexOf(searchString) !== -1)
+                        {
+                            return medias;
+                        }
+                    })
+                    nbMediasFiltre = tableau.length;
+                }
+                document.getElementById("nb-medias").innerHTML = nbMediasFiltre + ' résultats';
                 return tableau;
 
             }
         },
 
         methods: {
-            addLivre : function(id){
+            addMedia : function(id){
                 db.get(id).then(function(doc) {
                     console.log(dbUser);
                     return dbUser.put({
                         _id: doc._id,
                         visuel: doc.visuel,
+                        tyoe: doc.type,
                         titre: doc.titre,
+                        artiste: doc.artiste,
                         auteur: doc.auteur,
+                        realisateur: doc.realisateur,
                         edition: doc.edition,
-                        genre: doc.genre,
-                        tome: doc.tome,
-                        date_parution: doc.date_parution,
+                        console: doc.console,
+                        nb_titres: doc.nb_titres,
                         nb_pages: doc.nb_pages,
-                        langue: doc.langue,
-                        resume: doc.resume,
-                        isbn: doc.isbn
+                        duree: doc.duree,
+                        pegi: doc.pegi,
+                        support: doc.support,
+                        parution: doc.parution
                     });
                 }).then(function(response) {
                     console.log(response);
                 }).catch(function (err) {
                     console.log(err);
                 });
-            }
+            },
         }
 
     })
