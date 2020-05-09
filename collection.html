@@ -9,65 +9,90 @@
     <title>Document</title>
 </head>
 <body>
-<div id="wrapper" class="wrapper" v-cloak>
+<div id="container" class="container" v-cloak>
     <div class="header">
         <div class="titre">
-            <p>Livres</p>
+            <p>
+                Wishlist <span id="nb-medias"></span>
+            </p>
         </div>
         <div class="recherche">
-            <label for="recherche">Rechercher:</label><input type="text" id="recherche" v-model="searchString" placeholder="Entrer votre recherche" />
+            <input id="recherche" type="text" v-model="searchString" placeholder="Rechercher" />
+            <img src="pictos/22/filter.png" alt="Icône filtres d'ajustement">
         </div>
     </div>
     <div class="content" v-if="affichage">
-        <div id="livres" v-for="l in filtrer">
+        <div id="medias" v-for="m in filtrer">
 
-            <img class="img-livre" :src="l.doc.visuel">
-            <h3>{{ l.doc.titre }}</h3>
-            <p class="auteur">
-                {{ l.doc.auteur }}
-            </p>
-            <p class="edition">
-                {{ l.doc.edition }}
-            </p>
-            <p class="genre">
-                Genre(s) :
-                <span v-for="liv in l.doc.genre"><?php echo "{{liv}} / "; ?></span>
-            </p>
+            <img class="media-img" :src="m.doc.visuel">
+            <div class="media-textes">
 
-            <p class="tome">
-                {{ l.doc.tome }}
-            </p>
-            <p class="date_parution">
-                {{ l.doc.date_parution }}
-            </p>
-            <p class="nb_pages">
-                {{ l.doc.nb_pages }}
-            </p>
-            <p class="langue">
-                {{ l.doc.langue }}
-            </p>
-            <p class="resume">
-                {{ l.doc.resume }}
-            </p>
-            <p class="isbn">
-                {{ l.doc.isbn }}
-            </p>
+                <h3 v-if="m.doc.type == 'musique'" class="musique-titre">{{ m.doc.titre }}</h3>
+                <h3 v-if="m.doc.type == 'BD'" class="BD-titre">{{ m.doc.titre }}</h3>
+                <h3 v-if="m.doc.type == 'film'" class="film-titre">{{ m.doc.titre }}</h3>
+                <h3 v-if="m.doc.type == 'jeux'" class="jeux-titre">{{ m.doc.titre }}</h3>
 
+
+                <p id="media-first-line">
+                    <span v-if="m.doc.artiste" class="bold musique">
+                        {{ m.doc.artiste }} -
+                    </span>
+                    <span v-if="m.doc.auteur" class="bold livre">
+                        {{ m.doc.auteur }} -
+                    </span>
+                    <span v-if="m.doc.realisateur" class="bold film">
+                        {{ m.doc.realisateur }} -
+                    </span>
+                    <span v-if="m.doc.console" class="bold jeux">
+                        {{ m.doc.console }} -
+                    </span>
+
+
+                    <span v-if="m.doc.edition">
+                        {{ m.doc.edition }} -
+                    </span>
+
+                    <span v-if="m.doc.nb_titres">
+                        {{ m.doc.nb_titres }} titre(s)
+                    </span>
+                    <span v-if="m.doc.nb_pages" >
+                        {{ m.doc.nb_pages }} pages
+                    </span>
+                    <span v-if="m.doc.duree">
+                        {{ m.doc.duree }} minutes
+                    </span>
+                    <span v-if="m.doc.pegi">
+                        {{ m.doc.pegi }}
+                    </span>
+                </p>
+                <p id="media-second-line">
+                    <span class="bold">
+                        {{ m.doc.support }} -
+                    </span>
+                    <span>
+                        {{ m.doc.parution }}
+                    </span>
+                </p>
+            </div>
+            <button v-on:click="deleteMedia(m.doc._id)" class="btn-add">
+                <img src="pictos/52/add.png" class="icon-btn" alt="Icône d'ajout">
+            </button>
         </div>
         <a href="appli.html">
-            <button>> Ajouter un livre <</button>
+            <button>Voir la wishlist</button>
         </a>
     </div>
     <div class="footer">
-        <div class="picto-footer" id="account">
-            <img src="pictos/32/friends-32.png">
+        <div id="account" class="footer-content">
+            <img src="pictos/48/account.png" class="footer-img" alt="Icône compte utilisateur">
         </div>
-        <div class="picto-footer" id="home">
-            <img src="pictos/32/home-32.png">
+        <div id="home" class="footer-content">
+            <img src="pictos/48/home.png" class="footer-img" alt="Icône accueil">
         </div>
-        <div class="picto-footer" id="settings">
-            <img src="pictos/32/settings-32.png">
+        <div id="settings" class="footer-content">
+            <img src="pictos/48/settings.png" class="footer-img" alt="Icône paramètres">
         </div>
+
     </div>
 </div>
 
@@ -75,26 +100,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.5/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
 <script>
-    var db = new PouchDB('db_utilisateur');
+    var dbUser = new PouchDB('db_utilisateur');
 
 
-    var livres = new Vue({
-        el : '#wrapper',
+    var medias = new Vue({
+        el : '#container',
         data : {
             searchString: "",
-            tabLivres: [],
+            tabMedias: [],
             affichage: false,
         },
         mounted()
         {
             var vm = this;
-            db.sync('https://5f27fc86-3f3f-472c-a0a4-d8e736af858d-bluemix:c1f2fabb64ca498b4b4e93f1e2672f0361facfce1c1d932b59020b0f47ba6419@5f27fc86-3f3f-472c-a0a4-d8e736af858d-bluemix.cloudantnosqldb.appdomain.cloud/db_utilisateur')
+            dbUser.sync('https://5f27fc86-3f3f-472c-a0a4-d8e736af858d-bluemix:c1f2fabb64ca498b4b4e93f1e2672f0361facfce1c1d932b59020b0f47ba6419@5f27fc86-3f3f-472c-a0a4-d8e736af858d-bluemix.cloudantnosqldb.appdomain.cloud/db_utilisateur')
                 .then(function (doc) {
-                    return db.allDocs({include_docs: true})
+                    return dbUser.allDocs({include_docs: true})
                 }).then(function (doc) {
-                vm.tabLivres = doc.rows;
+                vm.tabMedias = doc.rows;
                 vm.affichage = true;
-                // console.log(vm.tabLivres);
             }).catch(function (err) {
                 console.log(err);
             });
@@ -102,7 +126,7 @@
 
         computed : {
             filtrer : function(){
-                var tableau = this.tabLivres;
+                var tableau = this.tabMedias;
                 searchString = this.searchString;
                 if(!searchString)
                 {
@@ -113,10 +137,10 @@
 
 
                 // Filtre sur titre
-                tableau = tableau.filter(function(livres){
-                    if(livres.doc.titre.toLowerCase().indexOf(searchString) !== -1)
+                tableau = tableau.filter(function(medias){
+                    if(medias.doc.titre.toLowerCase().indexOf(searchString) !== -1)
                     {
-                        return livres;
+                        return medias;
                     }
                 })
 
@@ -124,6 +148,20 @@
 
             }
         },
+
+        methods: {
+            deleteMedia : function(id){
+                var tableau = this.tabMedias;
+                dbUser.get(id).then(function(doc) {
+                    dbUser.remove(doc);
+                    return location.reload();
+                }).then(function(response) {
+                    console.log(response);
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+        }
 
     })
 

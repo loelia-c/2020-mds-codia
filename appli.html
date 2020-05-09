@@ -165,11 +165,10 @@
         methods: {
             addMedia : function(id){
                 db.get(id).then(function(doc) {
-                    console.log(dbUser);
                     return dbUser.put({
                         _id: doc._id,
                         visuel: doc.visuel,
-                        tyoe: doc.type,
+                        type: doc.type,
                         titre: doc.titre,
                         artiste: doc.artiste,
                         auteur: doc.auteur,
