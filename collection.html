@@ -13,7 +13,7 @@
     <div class="header">
         <div class="titre">
             <p>
-                Wishlist <span id="nb-medias"></span>
+                Ma collection (<span id="nb-medias"></span>)
             </p>
         </div>
         <div class="recherche">
@@ -101,7 +101,8 @@
 <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
 <script>
     var dbUser = new PouchDB('db_utilisateur');
-
+    var nbMediasTot = 0;
+    var nbMediasFiltre = 0;
 
     var medias = new Vue({
         el : '#container',
@@ -119,6 +120,7 @@
                 }).then(function (doc) {
                 vm.tabMedias = doc.rows;
                 vm.affichage = true;
+                nbMediasTot = vm.tabMedias.length;
             }).catch(function (err) {
                 console.log(err);
             });
@@ -130,20 +132,21 @@
                 searchString = this.searchString;
                 if(!searchString)
                 {
-                    return tableau;
+                    nbMediasFiltre = nbMediasTot;
                 }
-                searchString = searchString.trim().toLowerCase();
-
-
-
-                // Filtre sur titre
-                tableau = tableau.filter(function(medias){
-                    if(medias.doc.titre.toLowerCase().indexOf(searchString) !== -1)
-                    {
-                        return medias;
-                    }
-                })
-
+                else
+                {
+                    searchString = searchString.trim().toLowerCase();
+                    // Filtre sur titre
+                    tableau = tableau.filter(function(medias){
+                        if(medias.doc.titre.toLowerCase().indexOf(searchString) !== -1)
+                        {
+                            return medias;
+                        }
+                    })
+                    nbMediasFiltre = tableau.length;
+                }
+                document.getElementById("nb-medias").innerHTML = nbMediasFiltre + ' résultats';
                 return tableau;
 
             }
