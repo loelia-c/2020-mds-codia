@@ -9,7 +9,7 @@
 </head>
 <body>
 <div id="container" class="container" v-cloak>
-    <div class="header">
+    <div class="header" v-show="displayHeader">
         <div class="titre">
             <p>
                 Wishlist (<span id="nb-medias"></span>)
@@ -20,17 +20,13 @@
             <img src="pictos/22/filter.png" alt="Icône filtres d'ajustement">
         </div>
     </div>
-    <div class="content" v-if="affichage">
-        <div id="medias" v-for="m in filtrer">
+    <div class="content" v-if="display === 'wishlist'">
+        <div id="medias" v-for="(m, id) in filtrer">
 
             <img class="media-img" :src="m.doc.visuel">
             <div class="media-textes">
 
-                <h3 v-if="m.doc.type == 'musique'" class="musique-titre">{{ m.doc.titre }}</h3>
-                <h3 v-if="m.doc.type == 'BD'" class="BD-titre">{{ m.doc.titre }}</h3>
-                <h3 v-if="m.doc.type == 'film'" class="film-titre">{{ m.doc.titre }}</h3>
-                <h3 v-if="m.doc.type == 'jeux'" class="jeux-titre">{{ m.doc.titre }}</h3>
-
+                <h3 :class="m.doc.type + '-color'" v-on:click="displayDetailMedia(id)">{{ m.doc.titre }}</h3>
 
                 <p id="media-first-line">
                     <span v-if="m.doc.artiste" class="bold musique">
@@ -77,10 +73,73 @@
                 <img src="pictos/52/add.png" class="icon-btn" alt="Icône d'ajout">
             </button>
         </div>
-        <a href="collection.html">
-            <button>Ma collection</button>
-        </a>
+        <a href="collection.html" class="bouton">Ma collection</a>
     </div>
+
+    <div id="detail-media" v-if="display === 'detail-media'">
+        <div>
+            <img class="img-header" :src="detailMedia.doc.visuel">
+            <div id="detail-media-infos">
+                <h1 :class="detailMedia.doc.type + '-color' + ' detail-media-titre'">{{ detailMedia.doc.titre }}</h1>
+                <h2 :class="detailMedia.doc.type + '-color' + ' detail-media-support'">{{ detailMedia.doc.support }}</h2>
+
+                <p class="detail-media-infos">
+                    <span class="bold">Titre :</span>
+                    <span>{{ detailMedia.doc.titre }}</span>
+                </p>
+
+                <p v-if="detailMedia.doc.artiste" class="detail-media-infos">
+                    <span class="bold">Artiste :</span>
+                    <span>{{ detailMedia.doc.artiste }}</span>
+                </p>
+                <p v-if="detailMedia.doc.auteur" class="detail-media-infos">
+                    <span class="bold">Auteur :</span>
+                    <span>{{ detailMedia.doc.auteur }}</span>
+                </p>
+                <p v-if="detailMedia.doc.realisateur" class="detail-media-infos">
+                    <span class="bold">Réalisateur :</span>
+                    <span>{{ detailMedia.doc.realisateur }}</span>
+                </p>
+                <p v-if="detailMedia.doc.console" class="detail-media-infos">
+                    <span class="bold">Console :</span>
+                    <span>{{ detailMedia.doc.console }}</span>
+                </p>
+
+                <p class="detail-media-infos">
+                    <span class="bold">Parution :</span>
+                    <span>{{ detailMedia.doc.parution }}</span>
+                </p>
+
+                <p v-if="detailMedia.doc.edition" class="detail-media-infos">
+                    <span class="bold">Éditeur :</span>
+                    <span>{{ detailMedia.doc.edition }}</span>
+                </p>
+
+                <p class="detail-media-infos">
+                    <span class="bold">Format :</span>
+                    <span>{{ detailMedia.doc.support }}</span>
+                </p>
+
+                <p v-if="detailMedia.doc.nb_titres" class="detail-media-infos">
+                    <span class="bold">Titres :</span>
+                    <span>{{ detailMedia.doc.nb_titres }} titre(s)</span>
+                </p>
+                <p v-if="detailMedia.doc.nb_pages" class="detail-media-infos">
+                    <span class="bold">Pages :</span>
+                    <span>{{ detailMedia.doc.nb_pages }} pages</span>
+                </p>
+                <p v-if="detailMedia.doc.duree" class="detail-media-infos">
+                    <span class="bold">Durée :</span>
+                    <span>{{ detailMedia.doc.duree }} minutes</span>
+                </p>
+                <p v-if="detailMedia.doc.pegi" class="detail-media-infos">
+                    <span class="bold">PEGI :</span>
+                    <span>{{ detailMedia.doc.pegi }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <div class="footer">
         <div id="account" class="footer-content">
             <img src="pictos/48/account.png" class="footer-img" alt="Icône compte utilisateur">
@@ -110,7 +169,9 @@
         data : {
             searchString: "",
             tabMedias: [],
-            affichage: false,
+            displayHeader: true,
+            display: 'wishlist',
+            detailMedia: {},
         },
 
         mounted()
@@ -188,6 +249,12 @@
                     console.log(err);
                 });
             },
+
+            displayDetailMedia: function(id) {
+                this.display = 'detail-media';
+                this.detailMedia = this.filtrer[id];
+                this.displayHeader = false;
+            }
         }
 
     })

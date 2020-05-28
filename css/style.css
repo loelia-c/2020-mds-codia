@@ -18,6 +18,8 @@ h3{
     font-weight: 700;
 }
 
+
+
 .bold{
     font-weight: 700;
 }
@@ -156,26 +158,91 @@ h3{
     background-color: #5E3189;
 }
 
-.musique-titre{
+.musique-color{
     color: #127897;
 }
 
-.BD-titre{
+.BD-color{
     color: #FDCA00;
 }
 
-.film-titre{
+.film-color{
     color: #6767AD;
 }
 
-.jeux-titre{
+.jeux-color{
     color: #286CB4;
 }
 
+.detail-media-titre{
+    font-family: Comfortaa, sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    margin: 15px 0;
+}
+
+.detail-media-support{
+    font-family: Montserrat, sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 15px 0;
+}
+
+.detail-media-infos{
+    font-family: Montserrat, sans-serif;
+    font-size: 14px;
+}
+
+#detail-media-infos{
+    margin: 0 26px;
+}
+
+.detail-media-infos{
+    display: grid;
+    grid-template-columns: 86px 1fr;
+}
 
 .icon-btn{
     height: 15px;
 }
+
+
+.bouton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    width: 80%;
+    height: 48px;
+    margin: 0 auto;
+    border-radius: 24px;
+    border: none;
+    background-color: #5E3189;
+    color: #ffffff;
+    font-family: Montserrat, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+
+
+
+
+.img-header{
+    height: 192px;
+    width: 100%;
+    object-fit: cover;
+}
+
+
+
+
+
+
+
+
+
 
 .footer-content{
     display: flex;
