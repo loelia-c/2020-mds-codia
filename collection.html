@@ -77,7 +77,6 @@
         </div>
 
     <div id="detail-media" v-if="display === 'detail-media'">
-        <div>
             <img class="img-header" :src="detailMedia.doc.visuel">
             <div id="detail-media-infos">
                 <h1 :class="detailMedia.doc.type + '-color' + ' detail-media-titre'">{{ detailMedia.doc.titre }}</h1>
@@ -137,7 +136,7 @@
                     <span>{{ detailMedia.doc.pegi }}</span>
                 </p>
             </div>
-        </div>
+        <a href="collection.html" class="bouton">Retour</a>
     </div>
 
     <div class="footer">
